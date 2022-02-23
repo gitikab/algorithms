@@ -19,12 +19,12 @@ import kotlin.random.Random
  * [2, 3, 3, 5, 6, 7, 8]
  */
 
-fun sort(numbers : MutableList<Int>) {
+fun sort(numbers : MutableList<Int>, descending : Boolean = false) {
     var currentIndex = 1
     while(currentIndex < numbers.size){
         var lastSortedIndex = currentIndex - 1
         val key = numbers[currentIndex]
-        while(lastSortedIndex >= 0 && numbers[lastSortedIndex] > key){
+        while(lastSortedIndex >= 0 && buildCondition(key, numbers[lastSortedIndex],descending)){
             numbers[lastSortedIndex + 1] = numbers[lastSortedIndex]
             lastSortedIndex--
         }
@@ -33,11 +33,21 @@ fun sort(numbers : MutableList<Int>) {
     }
 }
 
+private fun buildCondition(key: Int, lastSortedValue: Int, descending: Boolean) =
+    if(descending)
+        lastSortedValue < key
+    else
+        lastSortedValue > key
+
 fun main() {
     val input = MutableList(10) { Random.nextInt() % 100 }
     println(input)
-    val expectedOutput = input.sorted()
+    val expectedOutputAscending = input.sorted()
+    val expectedOutputDescending = input.sortedByDescending { it }
     sort(input)
     println(input)
-    assert(expectedOutput == input)
+    assert(expectedOutputAscending == input)
+    sort(input, true)
+    println(input)
+    assert(expectedOutputDescending == input)
 }

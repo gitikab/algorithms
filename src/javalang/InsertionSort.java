@@ -24,19 +24,26 @@ import java.util.stream.IntStream;
 
 public class InsertionSort {
 
-    public static void sort(List<Integer> input) {
+    public static void sort(List<Integer> input, Boolean descending) {
         // Starting from second element
         int currentIndex = 1;
         while (currentIndex <= input.size() - 1) {
             int key = input.get(currentIndex);
             int lastSortedIndex = currentIndex - 1;
-            while (lastSortedIndex >= 0 && key < input.get(lastSortedIndex)) {
+            while (lastSortedIndex >= 0 && buildCondition(key, input.get(lastSortedIndex), descending)) {
                 input.set(lastSortedIndex + 1, input.get(lastSortedIndex)); //Shift element to the right
                 lastSortedIndex--;
             }
             input.set(lastSortedIndex + 1, key); //insert key once position is found
             currentIndex++;
         }
+    }
+
+    private static boolean buildCondition(Integer key, Integer lastSortedValue, Boolean descending){
+        if(descending)
+            return key > lastSortedValue;
+        else
+            return key < lastSortedValue;
     }
 
     public static void main(String[] args) {
@@ -46,9 +53,14 @@ public class InsertionSort {
 
         System.out.println(input);
 
-        List<Integer> expectedOutput = input.stream().sorted().toList();
-        sort(input);
+        List<Integer> expectedOutputAscending = input.stream().sorted().toList();
+        List<Integer> expectedOutputDescending = input.stream().sorted((o1, o2) -> o2.compareTo(01)).toList();
+        sort(input, false);
         System.out.println(input);
-        assert(input.equals(expectedOutput));
+        assert(input.equals(expectedOutputAscending));
+        sort(input, true);
+        System.out.println(input);
+        assert(input.equals(expectedOutputDescending));
+
     }
 }
